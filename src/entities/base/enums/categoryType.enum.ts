@@ -1,0 +1,19 @@
+export enum CategoryType {
+  education,
+  health,
+  housing,
+  investment,
+  personalCares,
+  taxes,
+  transport,
+  pet,
+  creditLines,
+  maintenancePrevention,
+  leisure,
+  clothing,
+  others,
+  wage,
+  rent,
+  pension,
+  vacation
+}
