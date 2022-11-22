@@ -12,7 +12,7 @@ export class Entries extends Base {
   Bank: string;
   BankId: string;
   isPaid: boolean;
-  value: string;
+  value: number;
   valuePaid: number;
   type: EntryType;
 }

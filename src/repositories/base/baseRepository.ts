@@ -7,23 +7,23 @@ export interface IBaseRepository<T> {
   getAll(): Promise<T[]>;
 }
 
-export abstract class BaseRepository<T extends Base> implements IBaseRepository<T> {
+export class BaseRepository<T extends Base> implements IBaseRepository<T> {
   repository: T[];
   
-  async save(item: T): Promise<string> {
+  save = async (item: T): Promise<string> => {
     try {
       await this.repository.push(item);
-      return '';
+      return item.id;
     } catch (error) {
       return 'Error: ' + error.message;
     }
 
   }
-  async update(id: string, newUser: T): Promise<string> {
+  update = async (id: string, newUser: T): Promise<string> => {
     try {
-      let user = await this.repository.findIndex(x => x.id === id) ?? 'Not found!';
-      if (typeof user === 'string')
-        return user;
+      let user = await this.repository.findIndex(x => x.id === id);
+      if (user == null)
+        return '';
       
       user = await this.repository.find(x => x.id === id);
       await this.delete(user.id);
@@ -36,7 +36,7 @@ export abstract class BaseRepository<T extends Base> implements IBaseRepository<
       return 'Update failed. Error: ' + error.message;
     }
   }
-  async delete(id: string): Promise<string> {
+  delete = async(id: string): Promise<string> => {
     try {
       let startIndex: number = await this.repository.findIndex(x => x.id === id);
       if (!startIndex)
@@ -45,21 +45,22 @@ export abstract class BaseRepository<T extends Base> implements IBaseRepository<
 
       if (startIndex !== -1) 
         await this.repository.splice(startIndex, deleteCount);
-      
-      await this.repository.splice(startIndex, deleteCount);
+      else
+        await this.repository.splice(startIndex, deleteCount);
     
     } catch (error) {
       return 'Error while deleting: ' + error.message;
     }
   }
-  async getById(id: string): Promise<any> {
+  getById = async (id: string): Promise<any> => {
     const user = await this.repository.find(x => x.id === id);
-    if (!user) 
-      return 'Not found'
+    if (user == null) 
+      return;
     
       return user;
   }
-  async getAll(): Promise<T[]> {
+  
+  getAll = async (): Promise<T[]> => {
     return  this.repository;
   }
 
