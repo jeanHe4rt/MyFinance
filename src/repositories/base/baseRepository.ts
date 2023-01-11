@@ -13,25 +13,29 @@ export class BaseRepository<T extends Base> implements IBaseRepository<T> {
   save = async (item: T): Promise<string> => {
     try {
       await this.repository.push(item);
-      return item.id;
+      return '';
     } catch (error) {
       return 'Error: ' + error.message;
     }
 
   }
-  update = async (id: string, newUser: T): Promise<string> => {
+  update = async (id: string, newEntity: T): Promise<string> => {
     try {
-      let user = await this.repository.findIndex(x => x.id === id);
-      if (user == null)
+      let index = await this.repository.findIndex(x => x.id === id);
+      if (index == null)
         return '';
       
-      user = await this.repository.find(x => x.id === id);
-      await this.delete(user.id);
-      const id  = user.id;
-      user = newUser;
-      user.id = id;
-      this.repository.push(user);
-
+      let entity = await this.repository.find(x => x.id === id);
+      if (entity != null) {
+        await this.delete(entity.id);
+        const id  = entity.id;
+        entity = newEntity;
+        entity.id = id;
+        this.repository.push(entity);
+        return 'Successfully updated!';
+      } else {
+        return 'Entity is not found!'
+      }
     } catch (error) {
       return 'Update failed. Error: ' + error.message;
     }
@@ -47,7 +51,8 @@ export class BaseRepository<T extends Base> implements IBaseRepository<T> {
         await this.repository.splice(startIndex, deleteCount);
       else
         await this.repository.splice(startIndex, deleteCount);
-    
+
+      return '';
     } catch (error) {
       return 'Error while deleting: ' + error.message;
     }

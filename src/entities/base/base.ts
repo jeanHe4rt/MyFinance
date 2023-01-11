@@ -4,6 +4,6 @@ interface IBase {
 }
 
 export class Base implements IBase {
-  id?: string;
+  id: string;
   lastUpdate?: Date;
 }
