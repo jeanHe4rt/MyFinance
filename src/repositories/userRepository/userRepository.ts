@@ -21,14 +21,19 @@ export class UserRepository extends BaseRepository<Users> {
     try {
       let index = await inMemory_UsersRepository.findIndex((x) => x.id == userId);
       if (index === null)
-        return null;
+        return '';
 
       let user = await inMemory_UsersRepository.find((x) => x.id === userId);
-      await this.delete(user.id);
-      const id = user.id;
-      user = newUser;
-      user.id = id;
-      inMemory_UsersRepository.push(user);
+      if(user != null){
+        await this.delete(user.id);
+        const id = user.id;
+        user = newUser;
+        user.id = id;
+        inMemory_UsersRepository.push(user);
+        return `Successfully update User ${user.id}`;
+      } else {
+        return 'User is not found!'
+      }
     } catch (error) {
       return 'Update user failed. Error: ' + error.message;
     }
@@ -41,10 +46,14 @@ export class UserRepository extends BaseRepository<Users> {
       if (startIndex == null) return 'User is not found!';
       const deleteCount = 1;
 
-      if (startIndex !== -1)
+      if (startIndex !== -1){
         await inMemory_UsersRepository.splice(startIndex, deleteCount);
-      else
+        return 'User deleted successfully';
+      }
+      else {  
         await inMemory_UsersRepository.splice(startIndex, deleteCount);
+        return 'User deleted successfully';
+      }
     } catch (error) {
       return 'Error while deleting user: ' + error.message;
     }
@@ -57,8 +66,6 @@ export class UserRepository extends BaseRepository<Users> {
     return user;
   }
   getAll = async (): Promise<Users[]> => {
-    const data = [];
-    inMemory_UsersRepository.map( user => data.push(user));
-    return data;
+    return inMemory_UsersRepository;
   }
 }

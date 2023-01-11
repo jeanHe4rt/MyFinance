@@ -5,6 +5,7 @@ export interface IBaseRepository<T> {
   delete(id: string): Promise<string>;
   getById(id: string): Promise<string>;
   getAll(): Promise<T[]>;
+  validateForm(item: T): Promise<string[]>;
 }
 
 export class BaseRepository<T extends Base> implements IBaseRepository<T> {
@@ -67,6 +68,9 @@ export class BaseRepository<T extends Base> implements IBaseRepository<T> {
   
   getAll = async (): Promise<T[]> => {
     return  this.repository;
+  }
+  validateForm = async (entity: T): Promise<Array<string>> => {
+    return [''];
   }
 
 }
